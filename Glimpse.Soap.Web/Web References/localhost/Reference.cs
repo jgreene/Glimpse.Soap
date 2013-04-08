@@ -106,25 +106,25 @@ namespace Glimpse.Soap.Web.localhost {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Test", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public TestResult Test(string inpu1, string input2) {
+        public TestResult Test(string input1, string input2) {
             object[] results = this.Invoke("Test", new object[] {
-                        inpu1,
+                        input1,
                         input2});
             return ((TestResult)(results[0]));
         }
         
         /// <remarks/>
-        public void TestAsync(string inpu1, string input2) {
-            this.TestAsync(inpu1, input2, null);
+        public void TestAsync(string input1, string input2) {
+            this.TestAsync(input1, input2, null);
         }
         
         /// <remarks/>
-        public void TestAsync(string inpu1, string input2, object userState) {
+        public void TestAsync(string input1, string input2, object userState) {
             if ((this.TestOperationCompleted == null)) {
                 this.TestOperationCompleted = new System.Threading.SendOrPostCallback(this.OnTestOperationCompleted);
             }
             this.InvokeAsync("Test", new object[] {
-                        inpu1,
+                        input1,
                         input2}, this.TestOperationCompleted, userState);
         }
         

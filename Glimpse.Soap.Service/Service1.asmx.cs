@@ -29,9 +29,9 @@ namespace Glimpse.Soap.Service
         }
 
         [WebMethod]
-        public TestResult Test(string inpu1, string input2)
+        public TestResult Test(string input1, string input2)
         {
-            return new TestResult {Test = "This is a test."};
+            return new TestResult {Test = input1 + input2 };
         }
     }
 }
