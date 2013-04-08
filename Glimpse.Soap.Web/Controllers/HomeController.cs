@@ -15,7 +15,10 @@ namespace Glimpse.Soap.Web.Controllers
             {
                 //System.Web.Services.Protocols.SoapHttpClientProtocol
                 ViewBag.Message = service.HelloWorld();
+                ViewBag.Test = service.Test("input1", "input2");
             }
+
+            
 
             return View();
         }

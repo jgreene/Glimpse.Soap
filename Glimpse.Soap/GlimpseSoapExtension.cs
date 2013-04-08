@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Web.Services.Protocols;
+using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace Glimpse.Soap
 {
@@ -44,6 +50,7 @@ namespace Glimpse.Soap
         private Stream _newStream;
         private readonly SoapResult _result = new SoapResult();
 
+
         public override void ProcessMessage(SoapMessage message)
         {
             if (GlimpseManager.IsGlimpseActive() == false)
@@ -54,18 +61,47 @@ namespace Glimpse.Soap
 
             switch (message.Stage)
             {
+                case SoapMessageStage.BeforeSerialize:
+                    _result.RequestArgs = GetRequestArgs(message);
+                    break;
                 case SoapMessageStage.AfterSerialize:
-                    _result.Request = GetXml(_newStream);
+                    _result.RequestXml = GetXml(_newStream);
+                    
                     CopyStream(_newStream, _oldStream);
                     break;
                 case SoapMessageStage.BeforeDeserialize:
                     CopyStream(_oldStream, _newStream);
-                    _result.Response = GetXml(_newStream);
-                    _result.Time = DateTime.Now - _start;
+                    _result.ResponseXml = GetXml(_newStream);
+                    break;
+                case SoapMessageStage.AfterDeserialize:
+                    _result.ResponseResult = message.GetReturnValue();
+                    _result.Duration = ((int)(DateTime.Now - _start).TotalMilliseconds).ToString() + "ms";
+                    _result.Stacktrace = new StackTrace(4, true).ToString();
                     GlimpseManager.LogMessage(_result);
                     break;
             }
         }
+
+        private static object[] GetRequestArgs(SoapMessage message)
+        {
+            var keepGoing = true;
+            var i = 0;
+            var objects = new List<object>();
+            while (keepGoing)
+            {
+                try
+                {
+                    objects.Add(message.GetInParameterValue(i));
+                    i++;
+                }
+                catch
+                {
+                    keepGoing = false;
+                }
+            }
+            return objects.ToArray();
+        }
+
         private static void CopyStream(Stream from, Stream to)
         {
             var buffer = new byte[4096];

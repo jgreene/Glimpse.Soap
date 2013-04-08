@@ -22,5 +22,16 @@ namespace Glimpse.Soap.Service
         {
             return "Hello World";
         }
+
+        public class TestResult
+        {
+            public string Test { get; set; }
+        }
+
+        [WebMethod]
+        public TestResult Test(string inpu1, string input2)
+        {
+            return new TestResult {Test = "This is a test."};
+        }
     }
 }

@@ -31,6 +31,8 @@ namespace Glimpse.Soap.Web.localhost {
         
         private System.Threading.SendOrPostCallback HelloWorldOperationCompleted;
         
+        private System.Threading.SendOrPostCallback TestOperationCompleted;
+        
         private bool useDefaultCredentialsSetExplicitly;
         
         /// <remarks/>
@@ -73,6 +75,9 @@ namespace Glimpse.Soap.Web.localhost {
         public event HelloWorldCompletedEventHandler HelloWorldCompleted;
         
         /// <remarks/>
+        public event TestCompletedEventHandler TestCompleted;
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/HelloWorld", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public string HelloWorld() {
             object[] results = this.Invoke("HelloWorld", new object[0]);
@@ -100,6 +105,37 @@ namespace Glimpse.Soap.Web.localhost {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Test", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public TestResult Test(string inpu1, string input2) {
+            object[] results = this.Invoke("Test", new object[] {
+                        inpu1,
+                        input2});
+            return ((TestResult)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void TestAsync(string inpu1, string input2) {
+            this.TestAsync(inpu1, input2, null);
+        }
+        
+        /// <remarks/>
+        public void TestAsync(string inpu1, string input2, object userState) {
+            if ((this.TestOperationCompleted == null)) {
+                this.TestOperationCompleted = new System.Threading.SendOrPostCallback(this.OnTestOperationCompleted);
+            }
+            this.InvokeAsync("Test", new object[] {
+                        inpu1,
+                        input2}, this.TestOperationCompleted, userState);
+        }
+        
+        private void OnTestOperationCompleted(object arg) {
+            if ((this.TestCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.TestCompleted(this, new TestCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
         }
@@ -115,6 +151,27 @@ namespace Glimpse.Soap.Web.localhost {
                 return true;
             }
             return false;
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.18033")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class TestResult {
+        
+        private string testField;
+        
+        /// <remarks/>
+        public string Test {
+            get {
+                return this.testField;
+            }
+            set {
+                this.testField = value;
+            }
         }
     }
     
@@ -140,6 +197,32 @@ namespace Glimpse.Soap.Web.localhost {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.17929")]
+    public delegate void TestCompletedEventHandler(object sender, TestCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.17929")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class TestCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal TestCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public TestResult Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((TestResult)(this.results[0]));
             }
         }
     }
