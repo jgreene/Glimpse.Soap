@@ -1,13 +1,13 @@
-﻿using Glimpse.Core.Extensibility;
+﻿using System.Web;
+using Glimpse.Core.Extensibility;
 using Glimpse.Core.Framework;
-using System;
-using System.Web;
 
 namespace Glimpse.Soap
 {
     internal static class GlimpseManager
     {
         private const string GlimpseItemKey = "__GlimpseRequestRuntimePermissions";
+
         public static bool IsGlimpseActive()
         {
             GlimpseRuntime runtime = GlimpseManager.GetRuntime();
@@ -21,13 +21,15 @@ namespace Glimpse.Soap
 
             return runtimePolicy == RuntimePolicy.On;
         }
+
         private static GlimpseRuntime GetRuntime()
         {
             if (HttpContext.Current == null || HttpContext.Current.ApplicationInstance == null)
                 return null;
-            
+
             return (HttpContext.Current.Application["__GlimpseRuntime"] as GlimpseRuntime);
         }
+
         public static void LogMessage<T>(T message)
         {
             GlimpseRuntime runtime = GlimpseManager.GetRuntime();
@@ -38,7 +40,12 @@ namespace Glimpse.Soap
                 return;
 
             var messageBroker = runtime.Configuration.MessageBroker;
-            messageBroker.Publish<T>(message);
+            messageBroker.Publish(message);
+        }
+
+        public static IExecutionTimer GetExecutionTimer()
+        {
+            return GetRuntime().Configuration.TimerStrategy();
         }
     }
 }
