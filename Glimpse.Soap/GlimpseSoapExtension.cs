@@ -70,15 +70,17 @@ namespace Glimpse.Soap
                 case SoapMessageStage.AfterDeserialize:
                     TimerResult dt = GlimpseManager.GetExecutionTimer().Stop(_timer);
 
+                    bool hasError = (message.Exception != null);
+
                     _result.Url = message.Url;
-                    _result.Method = message.MethodInfo.Name;
-                    _result.ResponseResult = message.GetReturnValue();
+                    _result.Method = message.MethodInfo.Name + (hasError ? " - ERROR" : "");
+                    _result.ResponseResult = hasError ? message.Exception : message.GetReturnValue();
                     _result.Duration = dt.Duration.Milliseconds + "ms";
                     _result.Stacktrace = new StackTrace(4, true).ToString();
                     GlimpseManager.LogMessage(_result);
 
                     var timeline = new SoapTimelineMessage();
-                    timeline.EventName = message.MethodInfo.Name;
+                    timeline.EventName = message.MethodInfo.Name + (hasError ? " - ERROR" : "");
                     timeline.EventSubText = message.Url + "\n" + _result.ResponseResult;
                     timeline.Offset = dt.Offset;
                     timeline.Duration = dt.Duration;
