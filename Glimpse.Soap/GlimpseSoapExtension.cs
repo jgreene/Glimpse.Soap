@@ -45,8 +45,13 @@ namespace Glimpse.Soap
         private Stream _oldStream;
         private Stream _newStream;
         private readonly SoapResult _result = new SoapResult();
-        private readonly TimeSpan _timer = GlimpseManager.GetExecutionTimer().Start();
+        private readonly TimeSpan _timer;
 
+        public GlimpseSoapExtension()
+        {
+            if (GlimpseManager.IsGlimpseActive())
+                _timer = GlimpseManager.GetExecutionTimer().Start();
+        }
 
         public override void ProcessMessage(SoapMessage message)
         {
