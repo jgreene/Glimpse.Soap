@@ -76,17 +76,24 @@ namespace Glimpse.Soap
                     TimerResult dt = GlimpseManager.GetExecutionTimer().Stop(_timer);
 
                     bool hasError = (message.Exception != null);
+                    object retVal;
+                    if (hasError)
+                        retVal = message.Exception;
+                    else if (message.MethodInfo.IsVoid)
+                        retVal = "The SOAP call is to a void method";
+                    else
+                        retVal = message.GetReturnValue();
 
                     _result.Url = message.Url;
                     _result.Method = message.MethodInfo.Name + (hasError ? " - ERROR" : "");
-                    _result.ResponseResult = hasError ? message.Exception : message.GetReturnValue();
+                    _result.ResponseResult = retVal;
                     _result.Duration = dt.Duration.Milliseconds + "ms";
                     _result.Stacktrace = new StackTrace(4, true).ToString();
                     GlimpseManager.LogMessage(_result);
 
                     var timeline = new SoapTimelineMessage();
                     timeline.EventName = message.MethodInfo.Name + (hasError ? " - ERROR" : "");
-                    timeline.EventSubText = message.Url + "\n" + _result.ResponseResult;
+                    timeline.EventSubText = message.Url + "\n" + retVal;
                     timeline.Offset = dt.Offset;
                     timeline.Duration = dt.Duration;
                     timeline.StartTime = dt.StartTime;
