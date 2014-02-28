@@ -1,0 +1,9 @@
+<configuration>
+    <system.web>
+        <webServices>
+          <soapExtensionTypes>
+            <add type="Glimpse.Soap.GlimpseSoapExtension, Glimpse.Soap" priority="0" group="0" />
+          </soapExtensionTypes>
+        </webServices>
+    </system.web>
+</configuration>
