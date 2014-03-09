@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Glimpse.Soap")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Glimpse SOAP Extension")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("jgreene")]
 [assembly: AssemblyProduct("Glimpse.Soap")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
